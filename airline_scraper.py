@@ -168,4 +168,3 @@ class search():
         json.dump(data, dataf)
         dataf.close()
         return "Finished!"
-

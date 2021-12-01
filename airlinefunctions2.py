@@ -14,7 +14,6 @@ import random
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 import time as time2
-from airline_scraper import *
 
 
 with open('final_search_list2.json', 'r') as myfile: #import the search list used for flights
@@ -128,46 +127,3 @@ def cheapest25(flight_dict): #reduces dictionary to cheapest 25
     output = sorted(flight_dict, key=lambda z: z['price'])[:25] 
     return output
 
-class search(): #searches flights
-    singleton_instance = None              
-    singleton_instance_count=0
-    def __new__(cls, *args, **kwargs):     #initiates the simpleton object
-        if cls.singleton_instance_count<=1:
-            cls.singleton_instance_count+=1
-            cls.singleton_instance = super(search, cls).__new__(
-                                cls, *args, **kwargs)
-    def search_flights(): 
-        data={}
-        data['data']= []
-        search_list=['LAX', 'DTW', 'MSY', 'MIA', 'SEA']
-        date_list=['2022-03-01', '2022-03-02', '2022-03-03','2022-03-04','2022-03-05','2022-03-06']
-        s=0
-        for s_item in search_list:
-            for item in fstate['data']:
-                for d_item in date_list:
-                    try:
-                        if s_item==item['FAA']:
-                            continue
-                        if (s %15 == 0) & (s != 0):
-                            driver = webdriver.Chrome(desired_capabilities=capabilities)
-                            free_proxies = get_free_proxies(driver)
-                            time2.sleep(2)
-                        flight_quote= get_info(s_item, item['FAA'], "2022-02-26", d_item)
-                        parsequote=get_min_data(flight_quote)
-                        parsequote['data'][0]['ib']=item['FAA']
-                        parsequote['data'][0]['ob']=s_item
-                        parsequote['data'][0]['date']=d_item
-                        parsequote['data'][0]['Continent']=item['Continent']
-                        parsequote['data'][0]['Country']=item['Country']
-                        parsequote['data'][0]['City']=item['City']
-                        data['data'].append(parsequote['data'][0])
-                        print(parsequote)
-                        time2.sleep(random.randint(20,30))
-                        s+=1
-                    except:
-                        print('errored out on ', s_item,' ', item['FAA'], ' ',d_item)
-                        time2.sleep(random.randint(20,30))
-        dataf = open("output_flights_data.json", "w")
-        json.dump(data, dataf)
-        dataf.close()
-        return "Finished!"
